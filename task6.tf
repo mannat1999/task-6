@@ -2,9 +2,10 @@ provider "kubernetes"{
     config_context_cluster="minikube"
 }
 
+#aws as provider
 provider "aws"{
     region="ap-south-1"
-    profile="mkn"
+    profile="rkd"
 }
 
 data "aws_vpc" "def_vpc"{
@@ -16,7 +17,7 @@ data "aws_subnet_ids" "vpc_sub"{
 }
 
 resource "aws_security_group" "allow_sql" {
-  name        = "my-sg"
+  name        = "mydb-sg"
   description = "Allow sql"
   vpc_id      = data.aws_vpc.def_vpc.id
 
@@ -36,7 +37,7 @@ resource "aws_security_group" "allow_sql" {
   }
 
   tags = {
-    Name = "my-sg"
+    Name = "mydb-sg"
   }
 }
 resource "aws_db_subnet_group" "sub_ids" {
@@ -137,6 +138,7 @@ resource "kubernetes_service" "wordpress"{
         }
     }
 
+# open on chrome
 resource "null_resource" "openwebsite"  {
 depends_on = [
     kubernetes_service.wordpress
